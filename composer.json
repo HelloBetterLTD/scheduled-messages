@@ -12,7 +12,8 @@
     ],
     "require": {
         "silverstripe/framework": "4.*",
-        "unclecheese/display-logic": "2.*"
+        "unclecheese/display-logic": "2.*",
+        "silverstripe/crontask": "2.5.*"
     },
     "extra": {
         "installer-name": "scheduled-messages"

@@ -4,6 +4,7 @@ namespace SilverStripers\ScheduledMessages\Extension;
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\ORM\DataExtension;
 use SilverStripers\ScheduledMessages\Model\EmailMessageTemplate;
@@ -22,6 +23,7 @@ class SiteConfigExtension extends DataExtension
                 ->setList(MessageTemplate::get())
                 ->setConfig(
                     GridFieldConfig_RecordEditor::create()
+                        ->removeComponentsByType(GridFieldAddNewButton::class)
                         ->addComponent($multiClass = GridFieldAddNewMultiClass::create())
                 )
         );
