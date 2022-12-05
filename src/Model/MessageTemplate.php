@@ -12,6 +12,7 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\TimeField;
+use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
@@ -127,12 +128,21 @@ class MessageTemplate extends DataObject
         $classes = ClassInfo::implementorsOf(ScheduledMessager::class);
         $ret = [];
         foreach ($classes as $class) {
-            $ret[$class] = Injector::inst()->get($class)->i18n_singular_name();
+            $object = Injector::inst()->get($class);
+            if (is_a($object, DataExtension::class)) {
+                $implementers = ClassInfo::classesWithExtension($class);
+                foreach ($implementers as $implementerClass) {
+                    $implementer = Injector::inst()->get($implementerClass);
+                    $ret[$implementerClass] = $implementer->i18n_singular_name();
+                }
+            } else {
+                $ret[get_class($object)] = $object->i18n_singular_name();
+            }
         }
         return $ret;
     }
 
-    protected function getMergeFieldsList()
+    public function getMergeFieldsList()
     {
         $fields = $this->getMergeFields();
         return sprintf('Merge fields {$%s}', implode('}, {$', $fields));
@@ -187,8 +197,9 @@ class MessageTemplate extends DataObject
         }
 
         if (!empty($sqls)) {
-            $list = $list->where(implode(' AND ', $sqls));
+            $list = $list->where('(' . implode(') AND (', $sqls) . ')');
         }
+        $this->invokeWithExtensions('updateSendersList', $list);
         return $list;
     }
 
@@ -203,7 +214,7 @@ class MessageTemplate extends DataObject
         }
     }
 
-    protected function mergeWithData(DataObject $object, $template)
+    public function mergeWithData(DataObject $object, $template)
     {
         $fields = $this->getMergeFields();
         $data = [];

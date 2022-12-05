@@ -16,7 +16,7 @@ class ProcessScheduledMessages extends BuildTask
     {
         /* @var $message MessageTemplate */
         foreach (MessageTemplate::get() as $message) {
-            if ($message->canProcess()) {
+            if ($message->canProcess()) { 
                 $message->process();
             }
         }
