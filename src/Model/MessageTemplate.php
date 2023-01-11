@@ -207,7 +207,13 @@ class MessageTemplate extends DataObject
     {
         $objects = $this->getSenders()->limit(5); // we dont want to bulk send a lot of emails
         foreach ($objects as $object) {
-            $this->processMessage($object);
+            $process = true;
+            if (ClassInfo::hasMethod($object, 'canSendScheduledMessage')) {
+                $process = $object->canSendScheduledMessage();
+            }
+            if ($process) {
+                $this->processMessage($object);
+            }
             if (!$this->isTest()) {
                 $this->markAsSent($object);
             }
