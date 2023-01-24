@@ -6,6 +6,8 @@ use SilverStripe\Forms\FieldList;
 
 class IsNotEmptyCondition extends Condition
 {
+    private static $table_name = 'IsNotEmptyCondition;
+    
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
