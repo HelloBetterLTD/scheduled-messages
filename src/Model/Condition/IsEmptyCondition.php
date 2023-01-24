@@ -7,7 +7,7 @@ use SilverStripe\Forms\FieldList;
 class IsEmptyCondition extends Condition
 {
     
-    private static $table_name = 'IsEmptyCondition;
+    private static $table_name = 'IsEmptyCondition';
 
     public function getCMSFields()
     {
